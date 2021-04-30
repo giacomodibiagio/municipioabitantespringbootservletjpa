@@ -1,7 +1,6 @@
 package it.prova.municipioabitantespringbootservletjpa.web.servlet.utente;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,56 +19,57 @@ import it.prova.municipioabitantespringbootservletjpa.service.UtenteService;
 import it.prova.municipioabitantespringbootservletjpa.utility.UtilityForm;
 
 @Component
-public class ExecuteInsertUtenteServlet extends HttpServlet {
+public class ExecuteModificaUtenteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	@Autowired
-	private UtenteService utenteService;
-	@Autowired
 	private RuoloService ruoloService;
+	@Autowired
+	private UtenteService utenteService;
        
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String usernameParam = request.getParameter("username");
-		String passwordParam = request.getParameter("password");
-		String nomeParam = request.getParameter("nome");
-		String cognomeParam = request.getParameter("cognome");
-		Date dateParam = new Date();
+		String idParameter = request.getParameter("idUtente");
+		String nomeParameter = request.getParameter("nome");
+		String cognomeParameter = request.getParameter("cognome");
+		String usernameParameter = request.getParameter("username");
+		String passwordParameter = request.getParameter("password");
 		String[] ruoliParam = request.getParameterValues("ruoli");
-		Set<Ruolo> ruoli = new HashSet<Ruolo>();
-		for(String item : ruoliParam) {
+		Set<Ruolo> ruoli = new HashSet<>();
+
+		for (String item : ruoliParam) { 
 			ruoli.add(ruoloService.caricaSingoloElemento(Long.parseLong(item)));
 		}
 		
-		
-		
-
-		// preparo un bean (che mi serve sia per tornare in pagina
-		// che per inserire) e faccio il binding dei parametri
-		Utente utenteInstance = UtilityForm.createUtenteFromParams(usernameParam, passwordParam, nomeParam, cognomeParam);
-		utenteInstance.setDateCreated(dateParam);
+		Utente utenteInstance = UtilityForm.createUtenteFromParams(nomeParameter, cognomeParameter, usernameParameter, passwordParameter);
 		utenteInstance.setRuoli(ruoli);
-
-		// se la validazione non risulta ok
+		utenteInstance.setId(Long.parseLong(idParameter));
+		
 		if (!UtilityForm.validateUtenteBean(utenteInstance)) {
-			request.setAttribute("insert_utente_attr", utenteInstance);
+
 			request.setAttribute("errorMessage", "Attenzione sono presenti errori di validazione");
-			request.getRequestDispatcher("/utente/insert.jsp").forward(request, response);
+			request.setAttribute("utente_attribute", utenteInstance);
+			request.getRequestDispatcher("/utente/edit.jsp").forward(request, response);
 			return;
 		}
 
-		// se sono qui i valori sono ok quindi posso creare l'oggetto da inserire
-		// occupiamoci delle operazioni di business
 		try {
-			utenteService.inserisciNuovo(utenteInstance);
+
+			utenteService.aggiorna(utenteInstance);
+			request.setAttribute("utenti_list_attribute",
+					utenteService.listAll());
+			request.setAttribute("successMessage", "Operazione effettuata con successo");
+
 		} catch (Exception e) {
+
 			e.printStackTrace();
 			request.setAttribute("errorMessage", "Attenzione si è verificato un errore.");
-			request.getRequestDispatcher("/utente/insert.jsp").forward(request, response);
+			request.getRequestDispatcher("home").forward(request, response);
 			return;
 		}
 
-		response.sendRedirect("ExecuteListUtenteServlet?operationResult=SUCCESS");
+		// andiamo ai risultati
+		request.getRequestDispatcher("/utente/list.jsp").forward(request, response);
 	}
 
 }

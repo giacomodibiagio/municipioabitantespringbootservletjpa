@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import it.prova.municipioabitantespringbootservletjpa.model.Utente;
+import it.prova.municipioabitantespringbootservletjpa.service.RuoloService;
 import it.prova.municipioabitantespringbootservletjpa.service.UtenteService;
 
 @Component
@@ -20,6 +21,8 @@ public class PrepareModificaUtenteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	@Autowired
 	private UtenteService utenteService;
+	@Autowired
+	private RuoloService ruoloService;
        
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String idParameter = request.getParameter("idUtente");
@@ -40,6 +43,7 @@ public class PrepareModificaUtenteServlet extends HttpServlet {
 
 			result = utenteService.caricaSingoloUtenteConRuoli(Long.parseLong(idParameter));
 			request.setAttribute("utente_attribute", result);
+			request.setAttribute("ruoli_list_attribute", ruoloService.listAll());
 
 		} catch (Exception e) {
 

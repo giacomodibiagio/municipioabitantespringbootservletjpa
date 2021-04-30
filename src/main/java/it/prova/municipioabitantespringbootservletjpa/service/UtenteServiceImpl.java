@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import it.prova.municipioabitantespringbootservletjpa.dao.UtenteDAO;
 import it.prova.municipioabitantespringbootservletjpa.model.Ruolo;
+import it.prova.municipioabitantespringbootservletjpa.model.StatoUtente;
 import it.prova.municipioabitantespringbootservletjpa.model.Utente;
 
 @Component
@@ -34,8 +35,12 @@ public class UtenteServiceImpl implements UtenteService {
 	}
 
 	@Transactional
-	public void aggiorna(Utente utenteInstance) {
+	public void aggiorna(Utente utenteInstance) throws Exception {
+		if (utenteDAO.list().size()==0 && utenteInstance.isAdmin() && utenteInstance.getStato()==StatoUtente.ATTIVO) {
+			throw new Exception("Utente non eliminabile.");
+		}else {
 		utenteDAO.update(utenteInstance);
+		}
 	}
 
 	@Transactional
@@ -45,7 +50,7 @@ public class UtenteServiceImpl implements UtenteService {
 
 	@Transactional
 	public void rimuovi(Utente utenteInstance) throws Exception {
-		if (utenteDAO.list().size()==0 && utenteInstance.isAdmin()) {
+		if (utenteDAO.list().size()==0 && utenteInstance.isAdmin() && utenteInstance.getStato()==StatoUtente.ATTIVO) {
 			throw new Exception("Utente non eliminabile.");
 		}else {
 			utenteDAO.delete(utenteInstance);

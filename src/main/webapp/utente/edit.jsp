@@ -56,15 +56,29 @@
 								<input type="text" class="form-control" name="password" id="password" placeholder="Inserire password" value="${utente_attribute.password }" required>
 							</div>
 						</div>
+						
+						<div class="form-group col-md-6">	
+							<label for="stato">Ruoli:</label>
+								<div class="form-check">
+									<c:forEach items="${ruoli_list_attribute}" var="ruoloItem">
+									  	<input name="ruoli" class="form-check-input" type="checkbox" value="${ruoloItem.id}" id="defaultCheck${ruoloItem.id}"
+									  	${utente_attribute.ruoli.contains(ruoloItem)?'checked':'' }>
+								  		<label class="form-check-label" for="defaultCheck${ruoloItem.id}">${ruoloItem.descrizione}</label>
+									<br/>
+									</c:forEach>
+								</div>
+						</div>
 							
 
 						<div class="form-group col-md-6">	
 							<button type="submit" name="submit" value="submit" id="submit" class="btn btn-primary">Conferma</button>
-							<input type="hidden" name="idRegista" value="${utente_attribute.id}">
+							<input type="hidden" name="idUtente" value="${utente_attribute.id}">
 							 <a href="ExecuteListUtenteServlet" class='btn btn-outline-secondary' style='width:80px'>
 			                <i class='fa fa-chevron-left'></i> Back
 			        </a>
 						</div>
+						
+						
 	
 					</form>
 

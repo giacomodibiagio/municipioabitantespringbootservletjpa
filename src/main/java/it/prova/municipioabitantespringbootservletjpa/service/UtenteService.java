@@ -11,7 +11,7 @@ public interface UtenteService  {
 
 	public Utente caricaSingoloElemento(Long id) ;
 
-	public void aggiorna(Utente utenteInstance) ;
+	public void aggiorna(Utente utenteInstance) throws Exception ;
 
 	public void inserisciNuovo(Utente utenteInstance) ;
 

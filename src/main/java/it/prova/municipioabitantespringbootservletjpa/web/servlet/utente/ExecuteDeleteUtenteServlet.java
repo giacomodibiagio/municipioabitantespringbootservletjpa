@@ -43,7 +43,12 @@ public class ExecuteDeleteUtenteServlet extends HttpServlet {
 			utenteInstance.setStato(StatoUtente.ATTIVO);
 		}
         
-        utenteService.aggiorna(utenteInstance);
+        try {
+			utenteService.aggiorna(utenteInstance);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         request.setAttribute("utenti_list_attribute", utenteService.listAll());
 
         RequestDispatcher rd = null;

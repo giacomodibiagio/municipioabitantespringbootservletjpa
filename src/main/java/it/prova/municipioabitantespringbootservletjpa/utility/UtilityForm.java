@@ -3,12 +3,16 @@ package it.prova.municipioabitantespringbootservletjpa.utility;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import it.prova.municipioabitantespringbootservletjpa.model.Abitante;
 import it.prova.municipioabitantespringbootservletjpa.model.Municipio;
+import it.prova.municipioabitantespringbootservletjpa.model.Ruolo;
+import it.prova.municipioabitantespringbootservletjpa.model.StatoUtente;
 import it.prova.municipioabitantespringbootservletjpa.model.Utente;
 
 public class UtilityForm {
@@ -82,5 +86,46 @@ public class UtilityForm {
 		}
 		return true;
 	}
+	public static Utente prepareSearchUtenteFromParams(String usernameInput, String nomeInput, String cognomeInput,
+			String statoInput, String[] idRuoloArrayInput, Date dateInput) {
+
+		Utente result = new Utente(usernameInput, nomeInput, cognomeInput, dateInput);
+
+		// setto lo stato utente fisso a creato appena viene creato
+		StatoUtente statoParsed = StringUtils.isNotBlank(statoInput) ? StatoUtente.traduciStatoUtente(statoInput) : null;
+
+		result.setStato(statoParsed);
+
+		Set<Ruolo> insiemeDiRuoli = null;
+		if (idRuoloArrayInput != null) {
+
+			insiemeDiRuoli = new HashSet<>();
+
+			for (String idRuoloItem : idRuoloArrayInput) {
+
+				Ruolo ruoloBean = new Ruolo();
+				ruoloBean.setId(Long.parseLong(idRuoloItem));
+				insiemeDiRuoli.add(ruoloBean);
+
+			}
+
+		}
+
+		result.setRuoli(insiemeDiRuoli);
+
+		return result;
+	}
+	
+	
+//	public static boolean validateUtenteBean(Utente utenteToBeValidated, String passwordRepeat) {
+//		// prima controlliamo che non siano vuoti i parametri
+//		if (StringUtils.isBlank(utenteToBeValidated.getNome()) || StringUtils.isBlank(utenteToBeValidated.getCognome())
+//				|| ! passwordRepeat.equals(utenteToBeValidated.getPassword())
+//				|| StringUtils.isBlank(utenteToBeValidated.getUsername())
+//				|| StringUtils.isBlank(utenteToBeValidated.getPassword())) {
+//			return false;
+//		}
+//		return true;
+//	}
 
 }

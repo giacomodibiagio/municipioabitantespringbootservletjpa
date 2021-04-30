@@ -1,4 +1,5 @@
 <%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!doctype html>
 <html lang="it">
 <head>
@@ -56,6 +57,16 @@
 								<input type="text" class="form-control" name="cognome" id="cognome" placeholder="Inserire cognome" value="${insert_utente_attr.cognome }" required>
 							</div>
 						</div>
+						<h4>Ruoli:</h4>
+							 	 
+ 							 <c:forEach items="${ruoli_list_attribute }" var="ruoloItem">
+									<div class="form-check" style="padding-top: 50px"> 	
+										<input name="ruoli" class="form-check-input" type="checkbox" value="${ruoloItem.id}" id="${ruoloItem.id}">
+									 	<label class="form-check-label" for="  ${ruoloItem.id}">
+											${ruoloItem.descrizione}
+										</label>
+									</div> 
+							 </c:forEach>
 						
 							
 						<button type="submit" name="submit" value="submit" id="submit" class="btn btn-primary">Conferma</button>
